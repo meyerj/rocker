@@ -44,6 +44,7 @@ kwargs = {
             'env = rocker.extensions:Environment',
             'mount = rocker.mount_extension:Mount',
             'nvidia = rocker.nvidia_extension:Nvidia',
+            'privileged = rocker.extensions:Privileged',
             'pulse = rocker.extensions:PulseAudio',
             'home = rocker.extensions:HomeDir',
             'user = rocker.extensions:User',
