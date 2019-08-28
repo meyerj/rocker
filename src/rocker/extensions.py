@@ -145,3 +145,22 @@ class User(RockerExtension):
             help="mount the users home directory")
 
 
+class Privileged(RockerExtension):
+    @staticmethod
+    def get_name():
+        return 'privileged'
+
+    def __init__(self):
+        self.name = Privileged.get_name()
+
+    def get_snippet(self, cli_args):
+        return ''
+
+    def get_docker_args(self, cli_args):
+        return ' --privileged'
+
+    @staticmethod
+    def register_arguments(parser):
+        parser.add_argument('--privileged',
+            action='store_true',
+            help="Give extended privileges to this container")
