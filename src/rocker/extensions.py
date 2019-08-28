@@ -23,8 +23,6 @@ from shlex import quote
 import subprocess
 import sys
 
-from .os_detector import build_detector_image
-from .os_detector import detect_os
 
 def name_to_argument(name):
     return '--%s' % name.replace('_', '-')
