@@ -10,7 +10,7 @@ RUN (getent group "@(gid)" >/dev/null || groupadd -g "@(gid)" "@name") \
        useradd --no-log-init --uid "@(uid)" -s "@(shell)" -c "@(gecos)" -g "@(gid)" -d "@(dir)" "@(name)" -m \
        && echo "@(name):@(name)" | chpasswd \
        && adduser @(name) sudo) \
- && echo "@(name) ALL=NOPASSWD: ALL" >> /etc/sudoers.d/@(name)
+ && echo "@(name) ALL=NOPASSWD: ALL" >> /etc/sudoers.d/rocker
 # Commands below run as the developer user
 USER @(name)
 @[else]@
