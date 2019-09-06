@@ -49,6 +49,7 @@ kwargs = {
             'privileged = rocker.extensions:Privileged',
             'pulse = rocker.extensions:PulseAudio',
             'ssh = rocker.ssh_extension:Ssh',
+            'ssh_server = rocker.ssh_server_extension:SshServer',
             'user = rocker.extensions:User',
             'x11 = rocker.nvidia_extension:X11',
         ]
