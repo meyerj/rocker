@@ -45,6 +45,7 @@ kwargs = {
             'nvidia = rocker.nvidia_extension:Nvidia',
             'pulse = rocker.extensions:PulseAudio',
             'home = rocker.extensions:HomeDir',
+            'ssh_server = rocker.ssh_server_extension:SshServer',
             'user = rocker.extensions:User',
             'x11 = rocker.nvidia_extension:X11',
         ]

@@ -164,7 +164,7 @@ class Environment(RockerExtension):
 
     @staticmethod
     def register_arguments(parser):
-        parser.add_argument('--env',
+        parser.add_argument(name_to_argument(Environment.get_name()),
             metavar='NAME[=VALUE]',
             type=str,
             nargs='+',
