@@ -15,9 +15,9 @@
 # limitations under the License.
 
 from collections import OrderedDict
-import io
 import os
 import re
+import shlex
 import sys
 
 import pkg_resources
@@ -26,13 +26,6 @@ import subprocess
 import tempfile
 
 import docker
-import pexpect
-
-import fcntl
-import signal
-import struct
-import termios
-
 
 class RockerExtension(object):
     """The base class for Rocker extension points"""
@@ -97,42 +90,6 @@ def docker_build(docker_client = None, output_callback = None, **kwargs):
     else:
         print("no more output and success not detected")
         return None
-
-
-class SIGWINCHPassthrough(object):
-    def __init__ (self, process):
-        self.process = process
-
-    def set_window_size(self):
-        s = struct.pack("HHHH", 0, 0, 0, 0)
-        try:
-            a = struct.unpack('hhhh', fcntl.ioctl(sys.stdout.fileno(),
-                termios.TIOCGWINSZ , s))
-        except (io.UnsupportedOperation, AttributeError) as ex:
-            # We're not interacting with a real stdout, don't do the resize
-            # This happens when we're in something like unit tests.
-            return
-        if not self.process.closed:
-            self.process.setwinsize(a[0],a[1])
-
-
-    def __enter__(self):
-        # Expected function prototype for signal handling
-        # ignoring unused arguments
-        def sigwinch_passthrough (sig, data):
-            self.set_window_size()
-    
-        signal.signal(signal.SIGWINCH, sigwinch_passthrough)
- 
-        # Initially set the window size since it may not be default sized
-        self.set_window_size()
-        return self
-
-    # Clean up signal handler before returning.
-    def __exit__(self, exc_type, exc_value, traceback):
-        # This was causing hangs and resolved as referenced 
-        # here: https://github.com/pexpect/pexpect/issues/465
-        signal.signal(signal.SIGWINCH, signal.SIG_DFL)
 
 class DockerImageGenerator(object):
     def __init__(self, active_extensions, cliargs, base_image):
@@ -217,12 +174,8 @@ class DockerImageGenerator(object):
             try:
                 print("Executing command: ")
                 print(cmd)
-                p = pexpect.spawn(cmd)
-                with SIGWINCHPassthrough(p):
-                    p.interact()
-                p.close(force=True)
-                return p.exitstatus
-            except pexpect.ExceptionPexpect as ex:
+                os.execlp('docker', *shlex.split(cmd))
+            except OSError as ex:
                 print("Docker run failed\n", ex)
                 return 1
 
