@@ -6,6 +6,7 @@ from setuptools import setup
 install_requires = [
     'empy',
     'pexpect',
+    'packaging',
 ]
 
 # docker API used to be in a package called `docker-py` before the 2.0 release
@@ -30,7 +31,7 @@ install_requires.append(docker_package)
 
 kwargs = {
     'name': 'rocker',
-    'version': '0.1.6',
+    'version': '0.1.7',
     'packages': ['rocker'],
     'package_dir': {'': 'src'},
     'package_data': {'rocker': ['templates/*.em']},
