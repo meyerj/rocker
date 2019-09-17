@@ -48,6 +48,9 @@ class Git(RockerExtension):
             args += ' -v {system_gitconfig}:{system_gitconfig}:ro'.format(**locals())
         if os.path.exists(user_gitconfig):
             args += ' -v {user_gitconfig}:{user_gitconfig_target}:ro'.format(**locals())
+        for var in ('GIT_AUTHOR_NAME', 'GIT_AUTHOR_EMAIL', 'GIT_COMMITTER_NAME', 'GIT_COMMITTER_EMAIL', 'EMAIL'):
+            if var in os.environ:
+                args += ' -e {}'.format(var)
         return args
 
     @staticmethod
