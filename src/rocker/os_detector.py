@@ -21,7 +21,11 @@ from .core import docker_build
 
 
 DETECTION_TEMPLATE="""
-FROM python:3 as detector
+FROM python:3-stretch as detector
+# Force the older version of debian for detector.
+# GLIBC is forwards compatible but not necessarily backwards compatible for pyinstaller
+# https://github.com/pyinstaller/pyinstaller/wiki/FAQ#gnulinux
+# StaticX is supposed to take care of this but there appears to be an issue when using subprocess
 
 RUN mkdir -p /tmp/distrovenv
 RUN python3 -m venv /tmp/distrovenv
@@ -41,17 +45,26 @@ CMD [ "" ]
 """
 
 
-def detect_os(image_name):
+def detect_os(image_name, output_callback=None):
     iof = StringIO((DETECTION_TEMPLATE % locals()).encode())
-    image_id = docker_build(fileobj = iof)
+    image_id = docker_build(fileobj = iof, output_callback=output_callback)
     if not image_id:
+        print('Failed to build detector image')
         return None
 
     cmd="docker run -it --rm %s" % image_id
+    if output_callback:
+        output_callback("running, ", cmd)
     p = pexpect.spawn(cmd)
-    output = p.read()
+    output = p.read().decode()
+    if output_callback:
+        output_callback("output: ", output)
     p.terminate()
     if p.exitstatus == 0:
-        return literal_eval(output.decode().strip())
+        return literal_eval(output.strip())
     else:
+        if output_callback:
+            output_callback("/tmp/detect_os failed:")
+            for l in output.splitlines():
+                output_callback("> %s" % l)
         return None
