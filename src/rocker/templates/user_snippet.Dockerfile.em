@@ -15,7 +15,10 @@ RUN existing_user_by_uid=`getent passwd "@(uid)" | cut -f1 -d: || true` && \
     fi && \
     useradd --no-log-init --uid "@(uid)" -s "@(shell)" -c "@(gecos)" -g "@(gid)" -d "@(dir)" "@(name)" -m && \
     echo "@(name) ALL=NOPASSWD: ALL" >> /etc/sudoers.d/rocker
-
+@[if not home_extension_active ]@
+# Making sure a home directory exists if we haven't mounted the user's home directory explicitly
+RUN mkhomedir_helper @(name)
+@[end if]@
 # Commands below run as the developer user
 USER @(name)
 @[else]@
