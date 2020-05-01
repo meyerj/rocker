@@ -160,11 +160,23 @@ class Environment(RockerExtension):
     def get_docker_args(self, cli_args):
         args = ['']
 
-        envs = [ x for sublist in cli_args['env'] for x in sublist]
-        for env in envs:
-            args.append('-e {0}'.format(quote(env)))
+        env_files = cli_args['env_file']
+        if env_files:
+            env_files = [ x for sublist in env_files for x in sublist ]
+            for env_file in env_files:
+                args.append('--env-file {0}'.format(quote(env_file)))
+
+        envs = cli_args['env']
+        if envs:
+            envs = [ x for sublist in envs for x in sublist ]
+            for env in envs:
+                args.append('-e {0}'.format(quote(env)))
 
         return ' '.join(args)
+
+    @classmethod
+    def is_active(self, cli_args):
+        return cli_args.get('env') or cli_args.get('env_file')
 
     @staticmethod
     def register_arguments(parser):
@@ -174,6 +186,11 @@ class Environment(RockerExtension):
             nargs='+',
             action='append',
             help='set environment variables')
+        parser.add_argument('--env-file',
+            type=str,
+            nargs='+',
+            action='append',
+            help='read in a file of environment variables')
 
 
 class Privileged(RockerExtension):
