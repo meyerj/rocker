@@ -46,10 +46,13 @@ kwargs = {
             'env = rocker.extensions:Environment',
             'git = rocker.git_extension:Git',
             'home = rocker.extensions:HomeDir',
+            'mount = rocker.mount_extension:Mount',
             'network = rocker.extensions:Network',
             'nvidia = rocker.nvidia_extension:Nvidia',
+            'privileged = rocker.extensions:Privileged',
             'pulse = rocker.extensions:PulseAudio',
             'ssh = rocker.ssh_extension:Ssh',
+            'ssh_server = rocker.ssh_server_extension:SshServer',
             'user = rocker.extensions:User',
             'x11 = rocker.nvidia_extension:X11',
         ]

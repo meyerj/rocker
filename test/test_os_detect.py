@@ -43,7 +43,7 @@ class RockerOSDetectorTest(unittest.TestCase):
         self.assertEqual(result[1], '29')
 
     def test_does_not_exist(self):
-        result = detect_os("osrf/ros:does_not_exist")
+        result = detect_os("osrf/ros:does-not-exist")
         self.assertEqual(result, None)
 
     def test_cannot_detect_os(self):

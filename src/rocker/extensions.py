@@ -198,7 +198,7 @@ class User(RockerExtension):
         parser.add_argument(name_to_argument(User.get_name()),
             action='store_true',
             default=defaults.get('user', None),
-            help="mount the current user's id and run as that user")
+            help="run the container with the uid/gid of the host user")
 
 
 class Environment(RockerExtension):
@@ -227,6 +227,10 @@ class Environment(RockerExtension):
 
         return ' '.join(args)
 
+    @classmethod
+    def is_active(self, cli_args):
+        return cli_args.get('env') or cli_args.get('env_file')
+
     @staticmethod
     def register_arguments(parser):
         parser.add_argument('--env', '-e',
@@ -245,3 +249,23 @@ class Environment(RockerExtension):
     def check_args_for_activation(cls, cli_args):
         """ Returns true if the arguments indicate that this extension should be activated otherwise false."""
         return True if cli_args.get('env') or cli_args.get('env_file') else False
+
+class Privileged(RockerExtension):
+    @staticmethod
+    def get_name():
+        return 'privileged'
+
+    def __init__(self):
+        self.name = Privileged.get_name()
+
+    def get_snippet(self, cli_args):
+        return ''
+
+    def get_docker_args(self, cli_args):
+        return ' --privileged'
+
+    @staticmethod
+    def register_arguments(parser):
+        parser.add_argument('--privileged',
+            action='store_true',
+            help="Give extended privileges to this container")
