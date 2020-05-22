@@ -264,7 +264,8 @@ class Privileged(RockerExtension):
         return ' --privileged'
 
     @staticmethod
-    def register_arguments(parser):
+    def register_arguments(parser, defaults={}):
         parser.add_argument('--privileged',
             action='store_true',
+            default=defaults.get('privileged', False),
             help="Give extended privileges to this container")

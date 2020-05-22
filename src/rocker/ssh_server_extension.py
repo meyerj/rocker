@@ -37,7 +37,8 @@ class SshServer(RockerExtension):
         return em.expand(snippet, self.get_environment_subs())
 
     @staticmethod
-    def register_arguments(parser):
+    def register_arguments(parser, defaults={}):
         parser.add_argument(name_to_argument(SshServer.get_name()),
             action='store_true',
+            default=defaults.get(SshServer.get_name(), False),
             help="Installs and configures an SSH server inside the container")

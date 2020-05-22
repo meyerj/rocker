@@ -61,10 +61,11 @@ class Mount(RockerExtension):
         return ' '.join(args)
 
     @staticmethod
-    def register_arguments(parser):
+    def register_arguments(parser, defaults={}):
         parser.add_argument('--mount',
             metavar='HOST-DIR[:CONTAINER-DIR[:OPTIONS]]',
             type=str,
             nargs='+',
             action='append',
+            default=defaults.get('mount', []),
             help='mount volumes in container')
