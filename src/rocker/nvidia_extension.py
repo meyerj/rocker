@@ -68,9 +68,10 @@ class X11(RockerExtension):
             raise ex
 
     @staticmethod
-    def register_arguments(parser):
+    def register_arguments(parser, defaults={}):
         parser.add_argument(name_to_argument(X11.get_name()),
             action='store_true',
+            default=defaults.get(X11.get_name(), None),
             help="Enable x11")
 
 
@@ -82,8 +83,8 @@ class Nvidia(RockerExtension):
     def __init__(self):
         self._env_subs = None
         self.name = Nvidia.get_name()
-        self.supported_distros = ['Ubuntu']
-        self.supported_versions = ['16.04', '18.04']
+        self.supported_distros = ['Ubuntu', 'Debian GNU/Linux']
+        self.supported_versions = ['16.04', '18.04', '20.04', '10']
 
 
     def get_environment_subs(self, cliargs={}):
@@ -105,7 +106,7 @@ class Nvidia(RockerExtension):
             sys.exit(1)
         self._env_subs['image_distro_version'] = ver
         if self._env_subs['image_distro_version'] not in self.supported_versions:
-            print("WARNING distro version %s not in supported list by Nvidia supported versions" % self._env_subs['image_distro_version'], self.supported_versions)
+            print("WARNING distro %s version %s not in supported list by Nvidia supported versions" % (dist, ver), self.supported_versions)
             sys.exit(1)
             # TODO(tfoote) add a standard mechanism for checking preconditions and disabling plugins
 
@@ -125,9 +126,10 @@ class Nvidia(RockerExtension):
         return "  --runtime=nvidia"
 
     @staticmethod
-    def register_arguments(parser):
+    def register_arguments(parser, defaults={}):
         parser.add_argument(name_to_argument(Nvidia.get_name()),
             action='store_true',
+            default=defaults.get(Nvidia.get_name(), None),
             help="Enable nvidia")
 
 
